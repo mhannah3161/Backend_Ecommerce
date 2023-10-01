@@ -30,8 +30,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const catData = await Category.findAll({
-    attributes: ["id"],
+  const catData = await Category.findByPk({
+    attributes: ["id", "category_name"],
     include: [{
       model: Product,
       attributes: ["id", "product_name", "price", "stock", "category_id"]
@@ -45,17 +45,13 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   await Category.create(req.body)
-    .then((newCat) => res.status(200).json(newCat))
-      .catch((err) => {
-        console.log(err);
-        res.status(400).json(err);
-      });
+    
   // create a new category --issues^^
 });
 
 router.put('/:id', async (req, res) => {
-  const catData = await Category.findAll({
-    attributes: ["id"],
+  const catData = await Category.findByPk({
+    attributes: ["id", "category_name"],
     include: [{
       model: Product,
       attributes: ["id", "product_name", "price", "stock", "category_id"]
@@ -67,8 +63,8 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  const catData = await Category.findAll({
-    attributes: ["id"],
+  const catData = await Category.findByPk({
+    attributes: ["id", "category_name"],
     include: [{
       model: Product,
       attributes: ["id", "product_name", "price", "stock", "category_id"]
