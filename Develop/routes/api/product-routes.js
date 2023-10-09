@@ -5,29 +5,50 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // get all products
 router.get('/', async (req, res) => {
-  const productData = await Product.findAll({
-    attributes: ["id", "product_name", "price", "stock", "category_id"],
-    include: [{
-      Model:Category,
-      attributes: [ "id", "category_name"]
-    }]
-  }).catch((err => {
-    res.json(err);
-  }));
-  res.json(productData);
+  Product.findAll(
+    {
+      include: [
+        {
+          model: Category,
+          attributes: ['category_name']
+        },
+        {
+          model: Tag,
+          attributes: ['tag_name']
+        }
+      ]
+    }
+  )
+    .then(productData => res.json(productData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   // find all products
   // be sure to include its associated Category and Tag data
 });
 
 // get one product
 router.get('/:id', async (req, res) => {
-  const productData = await Product.findByPk({
-    attributes: ["id", "product_name", "price", "stock", "category_id"],
-    include: [{
-      Model: Category,
-      attributes: ["id", "category_name"]
-    }]
-  })
+  Product.findAll(
+    {
+      include: [
+        {
+          model: Category,
+          attributes: ['category_name']
+        },
+        {
+          model: Tag,
+          attributes: ['tag_name']
+        }
+      ]
+    }
+  )
+    .then(productData => res.json(productData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
 });
@@ -111,14 +132,22 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  const productData = await Product.findAll({
-    attributes:["id", "product_name", "price", "stock", "category_id"],
-    include: [{
-      model:Category,
-      attributes: ["id", "category_name"]
-    }]
+  Product.destroy({
+    where: {
+      id: req.params.id
+    }
   })
-  res.json(productData)
+    .then(productData => {
+      if (!productData) {
+        res.status(404).json({ message: 'No Product found with that ID.' });
+        return;
+      }
+      res.json(productData);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   // delete one product by its `id` value
 });
 
